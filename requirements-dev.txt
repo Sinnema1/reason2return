@@ -1,0 +1,26 @@
+# R2R Development Dependencies
+# Includes testing, notebooks, and development tools
+
+# Code quality & pre-commit
+pre-commit>=3.5,<4.0
+black>=23.10,<24.0
+ruff>=0.1,<1.0
+mypy>=1.6,<2.0
+bandit>=1.7,<2.0
+
+# Testing
+pytest>=7.4,<8.0
+pytest-cov>=4.1,<5.0
+pytest-mock>=3.12,<4.0
+
+# Notebooks
+jupyter>=1.0,<2.0
+ipykernel>=6.26,<7.0
+matplotlib>=3.8,<4.0
+
+# Experiment tracking (for P1)
+mlflow>=2.8,<3.0
+
+# Documentation (for future)
+# mkdocs>=1.5,<2.0
+# mkdocs-material>=9.4,<10.0

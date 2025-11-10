@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reason2return.local/schemas/thesis.v1.schema.json",
+  "title": "R2R Thesis v1",
+  "description": "Structured analyst thesis with evidence grounding and decision",
+  "type": "object",
+  "required": ["ticker", "as_of", "thesis", "decision"],
+  "additionalProperties": false,
+  "properties": {
+    "ticker": {
+      "type": "string",
+      "description": "Stock ticker symbol",
+      "pattern": "^[A-Z]{1,5}$"
+    },
+    "as_of": {
+      "type": "string",
+      "format": "date",
+      "description": "Analysis date in YYYY-MM-DD format"
+    },
+    "thesis": {
+      "type": "object",
+      "required": [
+        "market",
+        "fundamentals",
+        "sentiment",
+        "technicals",
+        "insider",
+        "risks",
+        "evidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "market": {
+          "type": "array",
+          "description": "Market context and macro observations",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "fundamentals": {
+          "type": "array",
+          "description": "Financial fundamentals analysis",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "sentiment": {
+          "type": "array",
+          "description": "Sentiment and news analysis",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "technicals": {
+          "type": "array",
+          "description": "Technical analysis observations",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "insider": {
+          "type": "array",
+          "description": "Insider transaction analysis",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "risks": {
+          "type": "array",
+          "description": "Risk factors and concerns",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "evidence": {
+          "type": "array",
+          "description": "Evidence citations supporting claims",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["claim_id", "quote", "source", "time"],
+            "additionalProperties": false,
+            "properties": {
+              "claim_id": {
+                "type": "string",
+                "description": "Unique claim identifier"
+              },
+              "quote": {
+                "type": "string",
+                "description": "Quoted evidence text or numeric value"
+              },
+              "source": {
+                "type": "string",
+                "description": "Source type (e.g., 10-Q, news, insider_filing)"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL to source document (optional)"
+              },
+              "time": {
+                "type": "string",
+                "format": "date",
+                "description": "Evidence timestamp in YYYY-MM-DD format"
+              }
+            }
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": ["label", "probs"],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string",
+          "enum": ["SSell", "Sell", "Hold", "Buy", "SBuy"],
+          "description": "5-class decision label"
+        },
+        "probs": {
+          "type": "array",
+          "description": "Probability distribution over [SSell, Sell, Hold, Buy, SBuy]",
+          "items": { "type": "number", "minimum": 0, "maximum": 1 },
+          "minItems": 5,
+          "maxItems": 5
+        },
+        "conviction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Conviction score (optional)"
+        },
+        "horizons_days": {
+          "type": "array",
+          "description": "Forecast horizons in trading days",
+          "items": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "controls": {
+      "type": "object",
+      "description": "Risk control parameters (optional)",
+      "properties": {
+        "max_position_pct_nav": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Max position size as fraction of NAV"
+        },
+        "stop_max_dd": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Stop-loss max drawdown threshold"
+        }
+      }
+    },
+    "explain": {
+      "type": "object",
+      "description": "Explainability metadata (optional)",
+      "properties": {
+        "key_factors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Top contributing factors to decision"
+        },
+        "ablation_notes": {
+          "type": "string",
+          "description": "Notes from ablation studies or sensitivity analysis"
+        }
+      }
+    }
+  }
+}

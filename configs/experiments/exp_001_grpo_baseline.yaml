@@ -1,0 +1,13 @@
+# Experiment: GRPO-lite baseline
+# Inherits from base.yaml, overrides specific settings
+
+# Experiment metadata
+experiment:
+  name: "grpo_lite_baseline"
+  description: "Baseline using GRPO-lite (batch-relative) RL variant"
+  tags: ["baseline", "grpo", "P0"]
+
+# Override RFT algorithm
+rft:
+  algorithm: "grpo_lite"
+# Keep defaults from base.yaml for everything else

@@ -1,0 +1,14 @@
+# Experiment: Pairwise Ranking RL
+# More stable credit assignment with zero-sum advantages
+
+experiment:
+  name: "pairwise_ranking"
+  description: "Pairwise ranking RL for stable credit assignment"
+  tags: ["pairwise", "stable", "P0"]
+
+rft:
+  algorithm: "pairwise_ranking"
+
+  # Pairwise-specific settings
+  entropy_coef: 0.001
+  ce_anchor: 0.05

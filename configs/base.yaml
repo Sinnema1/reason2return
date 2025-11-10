@@ -1,0 +1,124 @@
+# Base Configuration for R2R
+# This file contains defaults that can be overridden by experiment-specific configs
+
+# Random seed for reproducibility
+seed: 42
+
+# Model architecture
+model:
+  backbone: "qwen-3-4b" # Placeholder - use your chosen base model
+  hidden_dim: 64
+  n_sections: 6 # market, fundamentals, sentiment, technicals, insider, risks
+  n_claims: 8
+  n_labels: 5 # SSell, Sell, Hold, Buy, SBuy
+
+# Training - SFT phase
+sft:
+  batch_size: 256
+  epochs: 2
+  learning_rate: 3.0e-3
+  weight_decay: 0.01
+  decision_weight: 1.0 # Weight for decision head in SFT loss
+
+# Training - RFT phase
+rft:
+  algorithm: "pairwise_ranking" # Options: pairwise_ranking, grpo_lite
+  batch_size: 256
+  epochs: 2
+  learning_rate: 1.0e-3 # Typically half of SFT LR
+
+  # Reward composition
+  rewards:
+    wS: 0.2 # Structure weight
+    wC: 0.3 # Claims weight
+    wD: 0.5 # Decision weight
+
+    # Decision reward parameters
+    decision:
+      asym_cost:
+        wrong_strong: 1.5 # Penalty for wrong SSell/SBuy
+        wrong_weak: 1.0 # Penalty for wrong Sell/Buy
+      smoothness_lambda: 0.1 # Penalty for day-to-day flip-flops
+
+  # RL-specific hyperparameters
+  entropy_coef: 0.001 # Entropy bonus for exploration
+  ce_anchor: 0.05 # Cross-entropy anchor for stability
+
+  # Schema validation (if using)
+  schema_validation:
+    enabled: false
+    alpha_schema: 0.5 # Blend between presence (0) and full validation (1)
+
+# Data configuration
+data:
+  # Synthetic data settings (for P0)
+  synthetic:
+    num_days: 600
+    tickers:
+      [
+        "NVDA",
+        "AAPL",
+        "AMZN",
+        "META",
+        "MSFT",
+        "SPY",
+        "GOOG",
+        "TSLA",
+        "NFLX",
+        "AMD",
+      ]
+
+  # Feature engineering
+  features:
+    lookback_momentum: [10, 30]
+    vol_lookback: 60
+
+  # Labeling
+  labels:
+    horizons: [5, 21, 63] # Trading days
+    scheme: "volatility_normalized"
+    thresholds:
+      strong_sell: -1.0
+      sell: -0.25
+      hold_lower: -0.25
+      hold_upper: 0.25
+      buy: 1.0
+      # strong_buy: >= 1.0 (implicit)
+
+# Backtesting
+backtest:
+  n_folds: 3
+  train_days: 320
+  test_days: 120
+
+  # Trading rules (demo)
+  trading:
+    long_labels: ["Buy", "SBuy"]
+    short_labels: ["Sell", "SSell"]
+    hold_days: 21 # Position holding period
+
+  # Transaction costs (for future use)
+  costs:
+    enabled: false
+    commission_bps: 2.0 # Basis points
+    slippage_bps: 5.0
+
+  # Capacity constraints (for future use)
+  capacity:
+    enabled: false
+    max_pct_adv: 0.05 # Max 5% of average daily volume
+
+# Paths (relative to project root)
+paths:
+  data: "data"
+  artifacts: "artifacts"
+  logs: "logs"
+  checkpoints: "checkpoints"
+
+# Logging
+logging:
+  level: "INFO" # DEBUG, INFO, WARNING, ERROR
+  format: "structured" # structured (JSON) or simple
+
+# Compute
+device: "cpu" # Options: cpu, cuda, mps (Apple Silicon)
