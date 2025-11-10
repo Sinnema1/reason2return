@@ -295,12 +295,21 @@
 
 #### Stricter Type Checking (P1)
 
+- [ ] **Fix PyTorch type issues in training modules** (CRITICAL - currently blocking mypy)
+  - [ ] Add proper type stubs for `ThesisPipeline.sample()` method
+  - [ ] Fix Tensor vs Module union type issues in `RFTTrainer._build_thesis_from_samples()`
+  - [ ] Add `calculate_batch_rewards()` method to `RewardCalculator` or fix type hints
+  - [ ] Re-enable mypy pre-commit hook after fixes
+- [ ] Enable `warn_return_any = true` in mypy (currently disabled)
 - [ ] Enable `disallow_untyped_defs = true` in mypy
 - [ ] Enable `disallow_any_generics = true` in mypy
 - [ ] Add type stubs for third-party packages
 - [ ] Achieve 100% type coverage on public API
+- [ ] Enable stricter Ruff rules (currently ignoring UP007, N806, C901, NPY002)
 
-**Estimated Effort:** Ongoing, 1-2 days initial push
+**Estimated Effort:** Ongoing, 2-3 days initial push
+
+**Note:** Mypy is currently disabled in pre-commit due to complex PyTorch typing issues. See `.pre-commit-config.yaml` for details.
 
 #### Security & Compliance (P2)
 
